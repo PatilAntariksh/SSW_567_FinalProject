@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MutPy mutation report - mutation #32</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    
+<link href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    
+<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" type="text/javascript"></script>
+<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushPython.js" type="text/javascript"></script>
+<script type="text/javascript">
+    SyntaxHighlighter.all();
+    window.setTimeout(function () {
+        
+        $('.line.number6').attr('title', 'ROR');
+        
+    }, 0);
+</script>
+
+</head>
+<body>
+    <div class="container">
+        
+<div class="page-header">
+    <h1>Mutation #32</h1>
+</div>
+<h3>Details</h3>
+<ul>
+    <li>module - <code><module 'MRTD' from '.\\MRTD.py'></code></li>
+    <li><span class="label label-success">killed</span> by <code>test_character_conversion (UpdatedMTTDTest.TestMRZFunctions)</code></li>
+    
+    <li>duration - 0.001 s</li>
+    
+    
+    <li>tests run - 1</li>
+    
+</ul>
+
+<h3>Exception traceback</h3>
+<pre>Traceback (most recent call last):
+  File ".\UpdatedMTTDTest.py", line 7, in test_character_conversion
+    self.assertEqual(character_conversion('A'), 10)  # A should convert to 10
+  File "MRTD", line 7, in character_conversion
+ValueError: invalid literal for int() with base 10: 'A'
+</pre>
+
+<h3>Mutations</h3>
+<ul>
+    
+    <li>ROR - line 6</li>
+    
+</ul>
+<h3>Mutant</h3>
+<pre class="brush: python; first-line: 1; highlight: [6]; toolbar: false;">import re
+
+def character_conversion(character):
+    if character == '<':
+        return 0
+    if '0' <= character >= '9':
+        return int(character)
+    if 'A' <= character <= 'Z':
+        return ord(character) - 55
+    print(f'Invalid MRZ character: {character}')
+    return None
+
+def Luhn_Algo(given_data):
+    weights = [7, 3, 1, 7, 3, 1]
+    checksum = 0
+    for (i, char) in enumerate(given_data):
+        value = character_conversion(char)
+        checksum += value * weights[i % 3]
+    return checksum % 10
+
+def Validating_MRZ(line1, line2):
+    pattern = '^[A-Z0-9<]{44}$'
+    if not (re.match(pattern, line1)):
+        return 'Error: Line 1 format is invalid. Human intervention required.'
+    if not (re.match(pattern, line2)):
+        return 'Error: Line 2 format is invalid. Human intervention required.'
+    return 'Valid MRZ format'
+
+def Defining_Errors(line1, line2, given_data):
+    if (len(line1) != 44 or len(line2) != 44):
+        print('Error: Each MRZ line should be exactly 44 characters long.')
+        return
+    
+    document_type = line1[0]
+    issuing_country = line1[2:5]
+    name_section = line1[5:].split('<<')
+    last_name = name_section[0].replace('<', ' ')
+    first_name = name_section[1].replace('<', ' ') if len(name_section) > 1 else ''
+    
+    passport_number = line2[0:9]
+    passport_check_digit = int(line2[9])
+    nationality = line2[10:13]
+    birth_date = line2[13:19]
+    birth_date_check_digit = int(line2[19])
+    gender = line2[20]
+    expiration_date = line2[21:27]
+    expiration_date_check_digit = int(line2[27])
+    personal_number = line2[28:37]
+    personal_number_check_digit = int(line2[43])
+    
+    
+    
+    
+    passport_error = (passport_number != given_data.get('passport_number') or Luhn_Algo(passport_number) != passport_check_digit)
+    birth_date_error = (birth_date != given_data.get('birth_date') or Luhn_Algo(birth_date) != birth_date_check_digit)
+    expiration_date_error = (expiration_date != given_data.get('expiration_date') or Luhn_Algo(expiration_date) != expiration_date_check_digit)
+    personal_number_error = (personal_number != given_data.get('personal_number') or Luhn_Algo(personal_number) != personal_number_check_digit)
+    name_error = (last_name != given_data.get('last_name') or first_name != given_data.get('first_name'))
+    
+    
+    if (passport_error and birth_date_error and expiration_date_error and personal_number_error and name_error):
+        return 'Danger: None of the fields match.'
+    elif name_error:
+        return 'Moderate: Spelling differences in Name.'
+    elif passport_error:
+        return 'Low: Passport number or its check digit does not match.'
+    elif birth_date_error:
+        return 'Low: Birth date or its check digit does not match.'
+    elif expiration_date_error:
+        return 'Low: Expiration date or its check digit does not match.'
+    elif personal_number_error:
+        return 'Low: Personal number or its check digit does not match.'
+    else:
+        
+        return 'All fields match and check digits are valid.'</pre>
+
+    </div>
+</body>
+</html>
