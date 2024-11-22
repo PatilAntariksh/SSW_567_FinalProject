@@ -18,7 +18,7 @@ def Luhn_Algo(data):
         if value is None:
             print(f"Invalid character in data: {char}")
             return None
-        if i % 2 == 1: #Since LUHN follows (2,1,2,1,..)
+        if i % 2 == 0: #Since LUHN follows (2,1,2,1,..)
             value *= 2
             if value > 9:
                 value -= 9     
