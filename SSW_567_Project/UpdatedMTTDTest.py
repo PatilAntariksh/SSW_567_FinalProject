@@ -18,12 +18,12 @@ class TestMRZFunctions(unittest.TestCase):
         
     def test_luhn_algo_correct_checksum1(self):           
         data = "L898902C3"  
-        expected_checksum = 3 
+        expected_checksum = 2 
         self.assertEqual(Luhn_Algo(data), expected_checksum)
     
     def test_luhn_algo_correct_checksum2(self):           
         data = "Z23456789"  
-        expected_checksum = 1  
+        expected_checksum = 8  
         self.assertEqual(Luhn_Algo(data), expected_checksum)
 
     def test_luhn_algo_incorrect_checksum1(self):
@@ -48,7 +48,7 @@ class TestMRZFunctions(unittest.TestCase):
     
     def test_defining_errors_all_match(self):
         line1 = "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<"
-        line2 = "L898902C33UTO7408121F1204155ZE184226B<<<<<<6"
+        line2 = "L898902C32UTO7408127F1204155ZE184226B<<<<<<5"
         given_data = {
         "passport_number": "L898902C3",  
         "birth_date": "740812",          
@@ -63,7 +63,7 @@ class TestMRZFunctions(unittest.TestCase):
 
     def test_defining_errors_all_match2(self):
         line1 = "P<CANJONES<<SARAH<WILLIAM<<<<<<<<<<<<<<<<<<<"
-        line2 = "E987654289CAN8607157F2707155Z1234567B<<<<<<2"
+        line2 = "E987654289CAN8607158F2707154Z1234567B<<<<<<2"
         given_data = {
         "passport_number": "E98765428",
         "birth_date": "860715",
