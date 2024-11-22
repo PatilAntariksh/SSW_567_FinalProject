@@ -11,7 +11,6 @@ def character_conversion(character):
     return None  #for invalid characters
 
 def Luhn_Algo(data):
-    """Calculate the Luhn checksum using the MRZ-compatible algorithm (standard Luhn with character support)."""
     total = 0
     reverse_data = data[::-1]  #Reversing whole string
     for i, char in enumerate(reverse_data):
